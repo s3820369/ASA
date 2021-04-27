@@ -11,9 +11,13 @@ public:
    ~LinkedList();
    int size();
    void clear();
-   void add_back(Tile* data);
+   void push_front(Tile* data);
+   void push_back(Tile* data);
+   Tile* at(int index);
+   void insertAt(Node** current, int pos, int data);
    void remove(int index);
-   void remove_front();
+   void pop_front();
+   void pop_back();
 
 private:
    Node* head;
