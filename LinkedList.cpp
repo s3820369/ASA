@@ -1,156 +1,158 @@
 
-#include "LinkedList.h"
 #include <stdexcept>
-#include <bits/stdc++.h>
+#include <string>
+#include "LinkedList.h"
 
 LinkedList::LinkedList() {
    head = nullptr;
-
-   // TODO
+   length = 0;
 }
 
 LinkedList::~LinkedList() {
    clear();
 }
 
-int LinkedList::size(){
-    
-    int length = 0;
-
-    Node* current = head;
-    while(current != nullptr){
-        ++length;
-        current = current->next;
-    }
-    return length;
+int LinkedList::size() {
+   return length;
 }
 
-void LinkedList::push_front(Tile* data){
-    Node* node = new Node();
-    node->tile = data;
-    node->next = head;
-    head = node;
+void LinkedList::push_front(Tile* data) {
+   Node* node = new Node(data, head);
+   head = node;
+   ++length;
 }
 
-void LinkedList::push_back(Tile* data){
-    Node* node = new Node();
-    node->tile = data;
-    node->next = nullptr;
+void LinkedList::push_back(Tile* data) {
+   Node* node = new Node(data, nullptr);
 
-    if(head == nullptr){
-        head = node;
-    }else{
-        Node* current = head;
-        while(current->next != nullptr){
-            current = current->next;
-        }
-        current->next = node;
-    }
+   if(head == nullptr) {
+      head = node;
+   } else {
+      Node* current = head;
 
-}
-Tile* LinkedList::at(int index){
-    Tile* retCard = nullptr;
-
-    if(index >= 0 && index < size()){
-
-        int counter = 0;
-        Node* current = head;
-
-        while(counter<index){
-            ++counter;
-            current = current->next;
-        }
-
-        retCard = current->tile;
-
-    }
-    return retCard;
+      while(current->next != nullptr) {
+         current = current->next;
+      }
+      current->next = node;
+   }
+   ++length;
 }
 
-// void insertAt(Node** current, int data, int pos)
-// {
-//     int length =0;   
-//     if (pos < 1 || pos > length + 1)
-//         std::cout << "Invalid position!" << std::endl;
-//     else {        
-//         while (pos--) {
- 
-//             if (pos == 0) {
-//                 Node* temp = at(data); 
-//                 temp->next = *current;
-//                 *current = temp;
-//             }
-//             else
-//                current = &(*current)->next;
-//         }
-//         length++;
-//     }
-// }
+Tile* LinkedList::at(int index) {
+   Tile* retTile = nullptr;
 
-void LinkedList::remove(int index){
-    if(index >= 0 && index < size()){
-        if(head != nullptr){
-            int counter = 0;
-            Node* current = head;
-            
-            Node* prev = nullptr;
+   if(index >= 0 && index < length) {
+      int i = 0;
+      Node* current = head;
 
-            while(counter != index){
-                ++counter;
-                prev = current;
-                current = current->next;
-            }
-
-            if(prev == nullptr){
-                head = current->next;
-            }else{
-                prev->next = current->next;
-            }
-
-            delete current->tile;
-            delete current;
-        }
-    }
+      while(i < index) {
+         current = current->next;
+         ++i;
+      }
+      retTile = current->tile;
+   }
+   return retTile;
 }
 
-void LinkedList::pop_front(){
-    if(head != nullptr){
-        Node* toDelete = head;
-        head = head->next;
+void LinkedList::insert(int index, Tile* data) {
+   Node* current = nullptr;
+   Node* prev = nullptr;
+   int i = 0;
 
-        delete toDelete->tile;
-        delete toDelete;
-    }else{
-        throw std::runtime_error("Nothing to remove");
-    }
+   if(index < 0 || index >= length)
+     out_of_bounds(index);
 
-}
-void LinkedList::pop_back(){
-    
-    if(head != nullptr){
-        Node* current = head;
-        //pre should point to node before current;
-        Node* prev = nullptr;
+   else if(index == 0)
+      push_front(data);
 
-        while(current->next != nullptr){
-            prev = current;
-            current = current->next;
-        }
+   else if(index == length-1)
+      push_back(data);
 
-        if(prev == nullptr){
-            head = nullptr;
-        }else{
-            prev->next = nullptr;
-        }
+   else {
+      current = head;
 
-        delete current->tile;
-        delete current;
-    }
-    
+      while(i < index) {
+         prev = current;
+         current = current->next;
+         ++i;
+      }
+      prev->next = new Node(data, current);
+      ++length;
+   }
 }
 
-void LinkedList::clear(){
-    while(head != nullptr){
-        pop_front();
-    }
+void LinkedList::remove(int index) {
+   if(index < 0 || index >= length)
+      out_of_bounds(index);
+      
+   if(head != nullptr) {
+      Node* current = head;
+      Node* prev = nullptr;
+      int i = 0;
+
+      while(i != index) {
+         prev = current;
+         current = current->next;
+         ++i;
+      }
+
+      if(index == 0)    head       = current->next;
+      else              prev->next = current->next;
+
+      delete current;
+   }
+   --length;
+}
+
+Tile* LinkedList::pop_front() {
+   Tile* retTile = nullptr;
+
+   if(head == nullptr)
+      out_of_bounds(0);
+
+   Node* toDelete = head;
+   head = head->next;
+
+   retTile = toDelete->tile;
+
+   delete toDelete;
+
+   --length;
+   return retTile;
+
+}
+Tile* LinkedList::pop_back() {
+   Tile* retTile = nullptr;
+
+   if(head == nullptr)
+      out_of_bounds(0);
+
+   Node* current = head;
+   Node* prev = nullptr;
+
+   while(current->next != nullptr) {
+      prev = current;
+      current = current->next;
+   }
+
+   // If popping head
+   if(prev == nullptr)  head       = nullptr; 
+   else                 prev->next = nullptr;
+
+   retTile = current->tile;
+   delete current;
+
+   --length;
+    return retTile;
+}
+
+void LinkedList::clear() {
+   while(head != nullptr) {
+      pop_front();
+   }
+}
+
+void LinkedList::out_of_bounds(int index) {
+   throw std::range_error("Index " + std::to_string(index)
+                           + " out of bounds for length: " + std::to_string(length));
 }

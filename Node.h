@@ -8,10 +8,17 @@ class Node {
 public:
 
    Node(Tile* tile, Node* next);
+
+   // Shallow copy of a Node
    Node(Node& other);
 
-   Tile*    tile;
-   Node*    next;
+   ~Node();
+
+   // Node data
+   Tile* tile;
+
+   // Next node in LinkedList
+   Node* next;
 };
 
 #endif // ASSIGN2_NODE_H
