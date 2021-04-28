@@ -49,7 +49,7 @@ void LinkedList::push_back(Tile* data){
 
 }
 Tile* LinkedList::at(int index){
-    Tile* retCard = nullptr;
+    Tile* retTile = nullptr;
 
     if(index >= 0 && index < size()){
 
@@ -61,10 +61,10 @@ Tile* LinkedList::at(int index){
             current = current->next;
         }
 
-        retCard = current->tile;
+        retTile = current->tile;
 
     }
-    return retCard;
+    return retTile;
 }
 
 // void insertAt(Node** current, int data, int pos)
