@@ -26,11 +26,19 @@ void Player:: updateScore(int x) {
     score += x;
 }
 
-int Player::getScore() {
+int Player::getScore() const {
     return score;
 }
 
+const LinkedList& Player::getHandConst() const {
+    return hand;
+}
 LinkedList& Player::getHand() {
     return hand;
+}
+
+
+std::string Player::getName() const {
+    return name;
 }
 

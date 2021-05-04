@@ -21,14 +21,23 @@ class Player {
       // Get hand
       LinkedList& getHand();
 
-      // Get scure
-      int  getScore();
+      // Get a const reference for passing to stream
+      const LinkedList& getHandConst() const;
       
+      // Get scure
+      int getScore() const;
+
+      // Get name
+      std::string getName() const;
+
    private:
-      // List of player's tiles
+      // Player name
+      std::string name;
+
+      // List of player tiles
       LinkedList hand;
 
-      // PLayer's score
+      // PLayer score
       int score;
 };
 

@@ -12,7 +12,7 @@ public:
    ~LinkedList();
 
    // Return number of elements
-   int size();
+   int size() const;
    
    // Add to front of list
    void push_front(Tile* data);
@@ -21,7 +21,7 @@ public:
    void push_back(Tile* data);
 
    // get tile at specified index
-   Tile* at(int index);
+   Tile* at(int index) const;
    
    // Insert into list at specified index, current element at index and proceeding elements are now at index + 1
    // Exception is if inserting at last element, then it becomes the last element

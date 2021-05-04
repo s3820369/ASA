@@ -12,7 +12,7 @@ LinkedList::~LinkedList() {
    clear();
 }
 
-int LinkedList::size() {
+int LinkedList::size() const {
    return length;
 }
 
@@ -38,7 +38,7 @@ void LinkedList::push_back(Tile* data) {
    ++length;
 }
 
-Tile* LinkedList::at(int index) {
+Tile* LinkedList::at(int index) const {
    Tile* retTile = nullptr;
 
    if(index >= 0 && index < length) {
