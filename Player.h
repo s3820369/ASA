@@ -7,16 +7,29 @@
 #include <string>
 
 class Player {
-public:
+   public:
+      
+      // Update the player's score
+      void updateScore(int x);
 
-   void updateScore(int x);
-   bool hasTile(std::string tileCode);
-   void replactTile(std::string tileCode, Tile* replacement);
-   int getScore();
+      // Replace tile in hand with incoming tile
+      void replaceTile(Tile* tile, Tile* replacement);
 
-private:
-   LinkedList hand;
-   int score;
+      // return specified tile
+      Tile* getTile(std::string tileCode);
+
+      // Get hand
+      LinkedList& getHand();
+
+      // Get scure
+      int  getScore();
+      
+   private:
+      // List of player's tiles
+      LinkedList hand;
+
+      // PLayer's score
+      int score;
 };
 
 #endif // ASSIGN2_PLAYER_H

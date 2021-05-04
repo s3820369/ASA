@@ -2,6 +2,8 @@
 #ifndef ASSIGN2_TILE_H
 #define ASSIGN2_TILE_H
 
+#include <string>
+
 // Define a Colour type
 typedef char Colour;
 
@@ -9,10 +11,12 @@ typedef char Colour;
 typedef int Shape;
 
 class Tile {
-public:
-   Tile(Colour colour, Shape shape);
-   Colour colour;
-   Shape  shape;
+   public:
+      Tile(Colour colour, Shape shape);
+      Colour colour;
+      Shape  shape;
 };
+
+bool operator==(const Tile tile1, const Tile tile2);
 
 #endif // ASSIGN2_TILE_H
