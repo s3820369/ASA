@@ -1,5 +1,6 @@
 
 #include "LinkedList.h"
+#include "Display.cpp"
 
 #include <iostream>
 
@@ -10,6 +11,10 @@ int main(void) {
    delete list;
 
    std::cout << "TODO: Implement Qwirkle!" << std::endl;
+   std::string input;
+   printMenu();
+   getInput (input);
+   makeSelection(input);
 
    return EXIT_SUCCESS;
 }
