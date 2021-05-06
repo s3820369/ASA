@@ -5,6 +5,7 @@
 #include "Overloads.h"
 #include "GameEngine.h"
 #include "TileCodes.h"
+#include <random>
 
 GameEngine::~GameEngine() {
     // No deleting as nothing is allocated on the heap.
@@ -185,5 +186,22 @@ bool GameEngine::save() {
 //        outputFile << board;    // TODO
         outputFile << tileBag;
         outputFile << currentPlayer->getName();
+    }
+}
+
+void randomTileBag(Tile * tiles){
+    int max = 72;
+    LinkedList tileBag;
+    std::random_device randomSeed;
+    std::uniform_int_distribution<int> uniform_dist(0, max-1);
+    int i = 0;
+    //loop throught the whole tile size
+    while(i< MAX_TILE_BAG_SIZE){
+        int randIndex = uniform_dist(randomSeed);
+        //check if at random pos there is tile or not if not add it to the bag.
+        if(tileBag.at(randIndex) != nullptr){
+            tileBag.insert(randIndex, tiles);
+            ++i;
+        }
     }
 }

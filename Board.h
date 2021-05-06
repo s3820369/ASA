@@ -14,7 +14,7 @@ public:
    void legalPlacementAt(std::string pos, Tile* t);
    std::vector<std::vector<Tile*>> getBoard();
    int getWidth();
-   int getHeight();
+   int getHeight();  
 
 private:
    std::vector<std::vector<Tile*>> board;
