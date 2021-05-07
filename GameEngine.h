@@ -47,6 +47,7 @@ private:
     bool gameIsOver();
     void checkError();
     bool save();
+    void randomTileBag(Tile * tiles);
 };
 
 #endif // ASSIGN2_GAMEENGINE_H
