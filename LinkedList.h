@@ -51,4 +51,6 @@ private:
    void out_of_bounds(int index);
 };
 
+std::ostream& operator<<(std::ostream &out, const LinkedList& list);
+
 #endif // ASSIGN2_LINKEDLIST_H
