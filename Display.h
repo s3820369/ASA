@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "LinkedList.h"
 #include "Board.h"
+#include "Util.h"
 
 class Display {
 public:
@@ -16,6 +17,8 @@ public:
     void print(Board& b);
     void print(std::string s);
 
+    void getInput(std::string& input);
+    int makeSelection();
 private:
    
 };
