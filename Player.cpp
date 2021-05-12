@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Util.h"
 
-Player::Player() {}
+Player::Player() : score(0) {}
 Player::Player(std::string name) : name(name), score(0) {}
 
 void Player::replaceTile(Tile* tile, Tile* replacement) {

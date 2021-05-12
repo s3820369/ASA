@@ -2,19 +2,19 @@
 #ifndef ASSIGN2_BOARD_H
 #define ASSIGN2_BOARD_H
 
-#include <Tile.h>
 #include <vector>
 #include <string>
+#include "Tile.h"
 
 class Board {
 public:
 
    void addToBoard(Tile* t);
    int calcScoreFrom(std::string pos);
-   void legalPlacementAt(std::string pos, Tile* t);
+   bool legalPlacementAt(std::string pos, Tile* t);
    std::vector<std::vector<Tile*>> getBoard();
    int getWidth();
-   int getHeight();
+   char getHeight();
 
 private:
    std::vector<std::vector<Tile*>> board;

@@ -9,7 +9,7 @@
 #include "Player.h"
 #include "Board.h"
 
-#define MAX_ARGS       4
+#define MAX_ARGS        4
 #define PLACE        "place"
 #define REPLACE     "replace"
 #define SAVE         "save"
@@ -17,17 +17,20 @@
 #define NO_ERROR       ""
 class GameEngine {
 public:
+    GameEngine();
+    GameEngine(std::string player1Name, std::string player2Name);
+    ~GameEngine();
     void start();
 
 private:
     std::string errorMessage;
-    typedef struct Tokens_t
+    typedef struct
     {
         std::string command;
         std::string tileCode;
         std::string boardLoc;
         std::string saveFile;
-    };
+    } Tokens_t;
 
     Player* currentPlayer;
     Player player1;

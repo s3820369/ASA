@@ -11,6 +11,16 @@ GameEngine::~GameEngine() {
     // Can change if we're only allowed to new instances.
 }
 
+GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
+    display = Display();
+    tileBag = LinkedList();
+    board = Board();
+    player1 = Player(player1Name);
+    player2 = Player(player2Name);
+    currentPlayer = &player1;
+}
+
+
 GameEngine::GameEngine() {
     display = Display();
     tileBag = LinkedList();
@@ -40,7 +50,7 @@ void GameEngine::start() {
         
         bool invalidInput = true;
         while(invalidInput) {
-
+            display.print("> ");
             if(getline(std::cin, input).eof()) {
                 invalidInput = false;
                 quit = true;
@@ -58,8 +68,7 @@ void GameEngine::start() {
         if(gameIsOver())
             quit = true;
     }
-    display.print("Goodbye!");
- }
+}
 
 
 bool GameEngine::executeCommand() {
@@ -101,7 +110,8 @@ bool GameEngine::parseInput(std::string input) {
     std::string tokens[MAX_ARGS] = {};
     bool valid = false;
 
-    for(int i = 0; i < MAX_ARGS && inputStream >> tokens[i]; ++i);
+    for(int i = 0; i < MAX_ARGS && inputStream >> tokens[i]; ++i)
+        toLowerCase(tokens[i]);
 
     if(PLACE == tokens[0]) {
         this->tokens.command = PLACE;
@@ -192,13 +202,12 @@ bool GameEngine::save() {
     std::ofstream outputFile("./" + tokens.saveFile + ".save");
     
     if(outputFile.good()) {
-        outputFile << player1; 
+        outputFile << player1;
         outputFile << player2;
 //        outputFile << board;    // TODO
         outputFile << tileBag;
         outputFile << currentPlayer->getName();
         success = true;
     }
-    return success;
-    
+    return success; 
 }
