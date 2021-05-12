@@ -15,6 +15,8 @@ class Tile {
       Tile(Colour colour, Shape shape);
       Colour colour;
       Shape  shape;
+      char getColor();
+      int getShape();
 };
 
 bool operator==(const Tile tile1, const Tile tile2);
