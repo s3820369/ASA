@@ -199,5 +199,31 @@ bool Board::islegalHorizontalCheck(int x,int y,Tile* t){
     }
 }
 void Board::displayBoard(){
-    char alphabets = 65;
+    char alphabets = 'A';
+    for(int y = 0; y<BOARD_SIZE; y++){
+        if(y == 0){
+            for (int u = 0; u< BOARD_SIZE; u++){
+                if(u == 0){
+                    std::cout<<"  ";
+                }
+                if(k<= 25){
+                    std::cout << k << "  ";
+                }
+            }
+            std::cout << std::endl;
+            std::cout << "--------------------------------------"<< std::endl ;
+        }
+        for (int c = 0; c<BOARD_SIZE; c++){
+            if(c ==0 ){
+                std::cout << alphabets << "|";
+                alphabets++;
+            }
+            if(this->board[y][c] == nullptr){
+                std::cout << "  |";
+            }else{
+                std::cout << this->board[y][c]->colour << this->board[y][c]->shape<<"|";
+            }
+        }
+        std::cout<<std::endl;
+    }
 }
