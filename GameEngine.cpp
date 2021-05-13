@@ -78,7 +78,7 @@ bool GameEngine::executeCommand() {
 
         if(nullptr != tile) {
             if(board.legalPlacementAt(tokens.boardLoc, tile)) {
-                board.addToBoard(tile);
+                board.addToBoard(tile, tokens.boardLoc);
                 valid = true;
             }
             else errorMessage = "You cannot place a tile here!";

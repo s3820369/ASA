@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdexcept>
-#include<Board.h>
-#include<TileCodes.h>
+#include "Board.h"
+
 // ill have positions 
 char i;
 int j = 0;
@@ -103,12 +103,8 @@ bool Board::legalPlacementAt(std::string pos, Tile* t){
     int row = 'Z' - rowString;
     char colString = pos[1];
     int col = colString - '0';
-   
-    
-    bool v = islegalVerticalCheck(col,row,t);
-    bool h = islegalHorizontalCheck(col,row,t);
-   
-    return (islegalVerticalCheck && islegalHorizontalCheck) ;
+
+    return islegalVerticalCheck(col,row,t) && islegalHorizontalCheck(col,row,t);
 
     
 }

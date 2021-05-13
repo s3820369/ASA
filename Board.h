@@ -2,16 +2,15 @@
 #ifndef ASSIGN2_BOARD_H
 #define ASSIGN2_BOARD_H
 
-#include <Tile.h>
 #include <vector>
 #include <string>
 #include <cmath>
-
+#include "Tile.h"
 
 #define BOARD_SIZE 26
 class Board {
 public:
-
+   Board();
    void addToBoard(Tile* t,std::string pos);
    int calcScoreFrom(std::string pos,Tile* g);
    bool legalPlacementAt(std::string pos, Tile* t);
