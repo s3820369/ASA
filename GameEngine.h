@@ -15,6 +15,9 @@
 #define SAVE         "save"
 #define AT            "at"
 #define NO_ERROR       ""
+
+#define MAX_TILE_BAG_SIZE   72
+
 class GameEngine {
 public:
     GameEngine();
@@ -49,6 +52,7 @@ private:
     bool gameIsOver();
     void checkError();
     bool save();
+    void randomTileBag(Tile * tiles);
 };
 
 #endif // ASSIGN2_GAMEENGINE_H

@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <random>
 #include <sstream>
 #include "GameEngine.h"
 #include "TileCodes.h"
@@ -210,4 +211,20 @@ bool GameEngine::save() {
         success = true;
     }
     return success; 
+}
+
+void GameEngine::randomTileBag(Tile* tiles) {
+    std::random_device randomSeed;
+    std::uniform_int_distribution<int> uniform_dist(0, MAX_TILE_BAG_SIZE-1);
+    int i = 0;
+
+    //loop throught the whole tile size
+    while(i < MAX_TILE_BAG_SIZE) {
+        int randIndex = uniform_dist(randomSeed);
+        //check if at random pos there is tile or not if not add it to the bag.
+        if(tileBag.at(randIndex) != nullptr) {
+            tileBag.insert(randIndex, tiles);
+            ++i;
+        }
+    }
 }
