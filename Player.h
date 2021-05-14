@@ -6,6 +6,8 @@
 #include "Tile.h"
 #include "LinkedList.h"
 
+#define HAND_SIZE    6
+
 class Player {
    public:
       Player();

@@ -2,32 +2,26 @@
 #include <stdexcept>
 #include "Board.h"
 
-// ill have positions 
-char i;
-int j = 0;
-
-
 Board::Board(){
-    width = BOARD_SIZE;
-    height = BOARD_SIZE;
+    width = COLUMNS;
+    height = ROWS;
     this->board.resize(BOARD_SIZE);
-    for ( int g = 0; g < 26; g++ ) {
+
+    for ( int i = 0; i < 26; i++ ) {
         this->board[i] = std::vector<Tile*>(BOARD_SIZE);
-        for ( int k = 0; k < 26; k++ ){
+
+        for ( int j = 0; j < 26; j++ ){
             this->board[i][j] = nullptr;
         }
     }
 
 }
 
-void Board::addToBoard(Tile* t,std::string pos){
-   
-    char Row = pos[0];
-    char Col = pos[1];
-    int row = 'Z' - Row;
-    int ColNum = Col - '0';
+void Board::addToBoard(Tile* t,std::string pos) {
+    char row = pos[0] - 'A';
+    char col = charToInt(pos[1]) - 1;
     // take the position of the tile. and say that position as the tile
-    this->board[row][ColNum] = new Tile(*t);
+    this->board[row][col] = new Tile(*t);
 }
 
 
@@ -35,10 +29,10 @@ int Board::calcScoreFrom(std::string pos, Tile* g){
     // adding the points from the row
     // adding the points for columns
     //checking if thers a qwirkle
-    
+    int i;
     char row = pos[0];
     int rowDown = 'Z' - row;
-    int rowRight = abs(row - 'A');
+   // int rowRight = abs(row - 'A');
     char col = pos[1];
     int ColNum = col - '0';
     int scoreRowUp = 0;
@@ -93,6 +87,7 @@ int Board::calcScoreFrom(std::string pos, Tile* g){
         }
     }
     int tot = totalRowScore + scoreColLeft + scoreColRight;
+    return tot;
 
 
 }
@@ -109,14 +104,10 @@ bool Board::legalPlacementAt(std::string pos, Tile* t){
     
 }
 
-std::vector<std::vector<Tile*>> Board::getBoard(){
-    return board;
-}
-
 int Board::getWidth(){
     return width;
-
 }
+
 int Board::getHeight(){
     return height;
 }
@@ -152,14 +143,15 @@ bool Board::islegalVerticalCheck(int x,int y,Tile* t) {
             differentShape = true;
         }
         tile = board[--d][x];
-    return !(differentShape && differentColor || sameTile);
     }
+    return !((differentShape && differentColor) || sameTile);
 }
+
 bool Board::islegalHorizontalCheck(int x,int y,Tile* t){
     bool differentShape;
     bool differentColor ;
     bool sameTile = false;
-    int height = 26;
+   // int height = 26;
     int d = x+1;
     Tile* tile = board[y][d];
     while (d < 26 && tile != nullptr) {
@@ -188,35 +180,12 @@ bool Board::islegalHorizontalCheck(int x,int y,Tile* t){
          }
         tile = board[y][--d];
     }
-    return !(differentShape && differentColor || sameTile);     
+    return !((differentShape && differentColor) || sameTile);     
+}
 
+Tile* Board::getAt(int x, int y) {
+    return board[y][x];
 }
-void Board::displayBoard(){
-    char alphabets = 'A';
-    for(int y = 0; y<BOARD_SIZE; y++){
-        if(y == 0){
-            for (int u = 0; u< BOARD_SIZE; u++){
-                if(u == 0){
-                    std::cout<<"  ";
-                }
-                if(u <= 25){
-                    std::cout << u << "  ";
-                }
-            }
-            std::cout << std::endl;
-            std::cout << "--------------------------------------"<< std::endl ;
-        }
-        for (int c = 0; c<BOARD_SIZE; c++){
-            if(c == 0 ){
-                std::cout << alphabets << "|";
-                alphabets++;
-            }
-            if(this->board[y][c] == nullptr){
-                std::cout << "  |";
-            }else{
-                std::cout << this->board[y][c]->colour << this->board[y][c]->shape<<"|";
-            }
-        }
-        std::cout<<std::endl;
-    }
-}
+
+
+

@@ -41,7 +41,7 @@ std::string Display::getInput() {
     std::string input;
 
     while(!*quit && !std::regex_match(input, std::regex("\\w+"))) {
-        std::cout << "> ";
+        prompt();
 
         if(std::getline(std::cin, input).eof()) {
             *quit = true;
@@ -80,6 +80,10 @@ void Display::print(std::string s) {
    std::cout << s << std::endl;
 }
 
+void Display::prompt() {
+    std::cout << "> ";
+}
+
 void Display::print(Player& player) {
    std::cout << "Player: " + player.getName() + "\n"
              << player.getScore() << "\n"
@@ -100,4 +104,50 @@ std::ostream& operator<<(std::ostream &out, const Player& player) {
     out << player.getName() << '\n' << std::to_string(player.getScore())
         << '\n' << player.getHandConst();
     return out;
+}
+// std::ostream& operator<<(std::ostream &out, const Colour& colour) {
+//     out << 
+// }
+
+// std::ostream& operator<<(std::ostream &out, const Shape& shape) {
+
+// }
+
+void Display::print(Board& board) {
+    char alphabets = 'A';
+    std::cout << "  ";
+
+    for(int y = 0; y < 2; y++) {
+        for(int u = 1; u < BOARD_SIZE + 1; u++) {
+            if(y == 0) {
+                if(u <= 9)
+                    std::cout << "0";
+                std::cout << u << " ";
+            }
+            else {
+                std::cout << "---";
+                std::cout.flush();
+            }
+        }
+        if(y == 1)
+            std::cout << "--";
+        std::cout << std::endl;
+    }
+    for(int row = 0; row < BOARD_SIZE; ++row) {
+
+        for(int c = 0; c < BOARD_SIZE; c++) {
+            if(c == 0) {
+                std::cout << alphabets << "|";
+                alphabets++;
+            }
+            if(board.getAt(c, row) == nullptr) {
+                std::cout << "  |";
+            } else {
+                std::cout << board.getAt(c, row)->colour
+                          << board.getAt(c, row)->shape << "|";
+            }
+        }
+        std::cout << std::endl;
+    }
+    std::cout<<std::endl;
 }

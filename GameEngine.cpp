@@ -19,6 +19,43 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     player1 = Player(player1Name);
     player2 = Player(player2Name);
     currentPlayer = &player1;
+    Tile* tiles[22] =
+    {
+        new Tile('R', 4),
+        new Tile('O', 2),
+        new Tile('P', 4),
+        new Tile('R', 1),
+        new Tile('Y', 6),
+        new Tile('B', 5),
+        new Tile('G', 3),
+        new Tile('B', 5),
+        new Tile('R', 5),
+        new Tile('O', 2),
+        new Tile('P', 3),
+        new Tile('G', 1),
+        new Tile('G', 5),
+        new Tile('Y', 4),
+        new Tile('Y', 2),
+        new Tile('p', 2),
+        new Tile('O', 1),
+        new Tile('G', 6),
+        new Tile('Y', 4),
+        new Tile('R', 2),
+        new Tile('B', 2),
+        new Tile('P', 6)
+    };
+
+    for(int i = 0; i < 22; ++i) {
+        tileBag.push_back(tiles[i]);
+    }
+
+    for(int i = 0; i < HAND_SIZE; ++i) {
+        player1.getHand().push_back(tileBag.pop_front());
+    }
+
+    for(int i = 0; i < HAND_SIZE; ++i) {
+        player2.getHand().push_back(tileBag.pop_front());
+    }
 }
 
 
@@ -47,11 +84,11 @@ void GameEngine::start() {
     bool quit = false;
 
     while(!quit) {
+        display.print(board);
         display.print(*currentPlayer);
-        
         bool invalidInput = true;
         while(invalidInput) {
-            display.print("> ");
+            display.prompt();
             if(getline(std::cin, input).eof()) {
                 invalidInput = false;
                 quit = true;
@@ -111,8 +148,8 @@ bool GameEngine::parseInput(std::string input) {
     std::string tokens[MAX_ARGS] = {};
     bool valid = false;
 
-    for(int i = 0; i < MAX_ARGS && inputStream >> tokens[i]; ++i)
-        toLowerCase(tokens[i]);
+    for(int i = 0; i < MAX_ARGS && inputStream >> tokens[i]; ++i);
+    //    toLowerCase(tokens[i]);
 
     if(PLACE == tokens[0]) {
         this->tokens.command = PLACE;

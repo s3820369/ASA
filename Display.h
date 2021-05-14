@@ -24,7 +24,7 @@ public:
     void print(Player& p);
     void print(Board& b);
     void print(std::string s);
-
+    void prompt();
     std::string getInput();
     int makeSelection();
 private:
