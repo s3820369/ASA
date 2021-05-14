@@ -53,10 +53,10 @@ private:
     bool gameIsOver();
     void checkError();
     bool save();
-    std::vector<Tile*> createTile();
-    void shuffleTiles(std::vector<Tile*> tiles);
+    void createTileBag();
+    //void shuffleTiles(std::vector<Tile*> tiles);
     std::vector<Tile*> tilesState;
-    void randomTileBag(Tile * tiles);
+    void shuffleTiles(Tile * tiles);
 };
 
 #endif // ASSIGN2_GAMEENGINE_H
