@@ -11,6 +11,7 @@ int main(void) {
    bool quit = false;
    bool* quit_ptr = &quit;
    Display display = Display(quit_ptr);
+   GameEngine* engine = nullptr;
 
    while(!quit) {
       if(valid)
@@ -26,8 +27,10 @@ int main(void) {
             display.print("Enter player 2 name:");
             player2Name = display.getInput();
          }
-         if(!quit)
-            GameEngine(player1Name, player2Name).start();
+         if(!quit) {
+            engine = new GameEngine(player1Name, player2Name);
+            engine->start();
+         }
          quit = true;
       }
       else if(LOAD_GAME == choice) {

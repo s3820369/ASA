@@ -87,6 +87,7 @@ void GameEngine::start() {
         display.print(board);
         display.print(*currentPlayer);
         bool invalidInput = true;
+
         while(invalidInput) {
             display.prompt();
             if(getline(std::cin, input).eof()) {
@@ -117,9 +118,13 @@ bool GameEngine::executeCommand() {
         if(nullptr != tile) {
             if(board.legalPlacementAt(tokens.boardLoc, tile)) {
                 board.addToBoard(tile, tokens.boardLoc);
+
+                Tile* replacement = tileBag.pop_front();
+                if(nullptr != replacement)
+                    currentPlayer->replaceTile(tile, replacement);
+
                 valid = true;
-            }
-            else errorMessage = "You cannot place a tile here!";
+            } else errorMessage = "You cannot place a tile here!";
         } else errorMessage = "You do not have that tile!";
     }
 
@@ -131,8 +136,7 @@ bool GameEngine::executeCommand() {
             if(nullptr != replacement) {
                 currentPlayer->replaceTile(playerTile, replacement);
                 valid = false;
-            }
-            else errorMessage = "There are no more tiles in the bag!";
+            } else errorMessage = "There are no more tiles in the bag!";
         } else errorMessage = "You do not have that tile!";
     }
     else if(tokens.command == SAVE) {

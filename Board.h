@@ -19,8 +19,6 @@ public:
    void addToBoard(Tile* t,std::string pos);
    int calcScoreFrom(std::string pos,Tile* g);
    bool legalPlacementAt(std::string pos, Tile* t);
-   bool islegalVerticalCheck(int x,int y,Tile* t);
-   bool islegalHorizontalCheck(int x,int y,Tile* t);
    int getWidth();
    int getHeight();
    int getMaxRow();
@@ -33,6 +31,15 @@ private:
    std::vector<std::vector<Tile*>> board;
    int width;
    int height;
+
+   bool isLegalVerticalCheck(Tile* comparingTo, int startX, int startY,
+                             int lower, int upper);
+
+   bool isLegalHorizontalCheck(Tile* comparingTo, int startX, int startY,
+                               int lower, int upper);
+
+   void checkConditions(Tile* placingTile, Tile* comparingTo,
+                        bool& diffColour, bool& diffShape, bool& sameTile);
 };
 
 #endif // ASSIGN2_BOARD_H
