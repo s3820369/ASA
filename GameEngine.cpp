@@ -30,7 +30,7 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
         new Tile('G', 3),
         new Tile('B', 5),
         new Tile('R', 5),
-        new Tile('O', 2),
+        new Tile('O', 2), 
         new Tile('P', 3),
         new Tile('G', 1),
         new Tile('G', 5),
@@ -56,6 +56,7 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     for(int i = 0; i < HAND_SIZE; ++i) {
         player2.getHand().push_back(tileBag.pop_front());
     }
+    this->tiles.resize(72);
 }
 
 
@@ -112,12 +113,15 @@ void GameEngine::start() {
 
 bool GameEngine::executeCommand() {
     bool valid = false;
+    int x = charToInt(tokens.boardLoc[1]) - 1;
+    int y = tokens.boardLoc[1] - 'A';
+
     if(PLACE == tokens.command) {
         Tile* tile = currentPlayer->getTile(tokens.tileCode);
 
         if(nullptr != tile) {
-            if(board.legalPlacementAt(tokens.boardLoc, tile)) {
-                board.addToBoard(tile, tokens.boardLoc);
+            if(board.legalPlacementAt(x, y, tile)) {
+                board.addToBoard(tile, x, y);
 
                 Tile* replacement = tileBag.pop_front();
                 if(nullptr != replacement)
@@ -246,7 +250,7 @@ bool GameEngine::save() {
     if(outputFile.good()) {
         outputFile << player1;
         outputFile << player2;
-//        outputFile << board;    // TODO
+        outputFile << board;
         outputFile << tileBag;
         outputFile << currentPlayer->getName();
         success = true;
@@ -267,5 +271,31 @@ void GameEngine::randomTileBag(Tile* tiles) {
             tileBag.insert(randIndex, tiles);
             ++i;
         }
+    }
+}
+std::vector<Tile*> GameEngine::createTile() {
+    // loop through each color and the each shape for it
+    // do it for all the colors
+    Colour c[6] = {RED,ORANGE,YELLOW,GREEN,BLUE,PURPLE};
+    Shape  s[6] = {CIRCLE,STAR_4,DIAMOND,SQUARE,STAR_6,CLOVER};
+
+    for(int i = 0; i < 6; i++) {
+        for(int j = 0;j < 6; j++) {
+            Tile* tempTile = new Tile(c[i], s[j]);
+            tilesState.push_back(tempTile);
+        }
+    }   
+    for(int i = 0; i < 6; i++) {
+        for(int j = 0; j < 6; j++) {
+            Tile* tempT = new Tile(c[i], s[j]);
+            tilesState.push_back(tempT);
+        }
+    }
+
+}
+
+void GameEngine::shuffleTiles(std::vector<Tile*> tiles) {
+    for(int i=0; i < tilesState.size(); i++) {
+        randomTileBag(tilesState[i]); 
     }
 }

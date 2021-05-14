@@ -4,10 +4,13 @@
 
 #include <string>
 
+
 #include "LinkedList.h"
 #include "Display.h"
 #include "Player.h"
 #include "Board.h"
+#include "Tile.h"
+#include "TileCodes.h"
 
 #define MAX_ARGS        4
 #define PLACE        "place"
@@ -15,8 +18,6 @@
 #define SAVE         "save"
 #define AT            "at"
 #define NO_ERROR       ""
-
-#define MAX_TILE_BAG_SIZE   72
 
 class GameEngine {
 public:
@@ -52,6 +53,9 @@ private:
     bool gameIsOver();
     void checkError();
     bool save();
+    std::vector<Tile*> createTile();
+    void shuffleTiles(std::vector<Tile*> tiles);
+    std::vector<Tile*> tilesState;
     void randomTileBag(Tile * tiles);
 };
 

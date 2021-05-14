@@ -8,17 +8,18 @@
 #include "Tile.h"
 #include "Util.h"
 
-#define BOARD_SIZE   26
-#define COLUMNS      26
-#define ROWS         'Z'
+#define MAX_TILE_BAG_SIZE  72
+#define BOARD_SIZE         26
+#define COLUMNS            26
+#define ROWS              'Z'
 
 class Board {
    
 public:
    Board();
-   void addToBoard(Tile* t,std::string pos);
-   int calcScoreFrom(std::string pos,Tile* g);
-   bool legalPlacementAt(std::string pos, Tile* t);
+   void addToBoard(Tile* t, int x, int y);
+   int calcScoreFrom(int x, int y, Tile* g);
+   bool legalPlacementAt(int x, int y, Tile* t);
    int getWidth();
    int getHeight();
    int getMaxRow();
@@ -41,5 +42,7 @@ private:
    void checkConditions(Tile* placingTile, Tile* comparingTo,
                         bool& diffColour, bool& diffShape, bool& sameTile);
 };
+
+std::ostream& operator<<(std::ostream &out, const Board& board);
 
 #endif // ASSIGN2_BOARD_H

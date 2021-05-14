@@ -1,5 +1,3 @@
-#include <iostream>
-#include <stdexcept>
 #include "Board.h"
 
 Board::Board() {
@@ -7,31 +5,29 @@ Board::Board() {
     height = ROWS;
     board.resize(BOARD_SIZE);
 
-    for (int i = 0; i < ROWS - 'A' + 1; ++i) {
+    for(int i = 0; i < ROWS - 'A' + 1; ++i) {
         board[i] = std::vector<Tile*>(BOARD_SIZE);
 
-        for (int j = 0; j < COLUMNS; ++j) {
+        for(int j = 0; j < COLUMNS; ++j) {
             board[i][j] = nullptr;
         }
     }
 }
 
-void Board::addToBoard(Tile* t, std::string pos) {
-    char row = pos[0] - 'A';
-    char col = charToInt(pos[1]) - 1;
-    board[row][col] = t;
+void Board::addToBoard(Tile* t, int x, int y) {
+    board[y][x] = t;
 }
 
 
-int Board::calcScoreFrom(std::string pos, Tile* g) {
+int Board::calcScoreFrom(int x, int y, Tile* g) {
     // adding the points from the row
     // adding the points for columns
-    //checking if thers a qwirkle
+    //checking if sthers a qwirkle
     int i;
-    char row = pos[0];
+    char row = y;
     int rowDown = 'Z' - row;
    // int rowRight = abs(row - 'A');
-    char col = pos[1];
+    char col = x;
     int ColNum = col - '0';
     int scoreRowUp = 0;
     int scoreRowDown= 0;
@@ -91,19 +87,21 @@ int Board::calcScoreFrom(std::string pos, Tile* g) {
 }
 
 
-bool Board::legalPlacementAt(std::string pos, Tile* tile) {
-    int row = pos[0] - 'A';
-    int col = charToInt(pos[1]) - 1;
-    return isLegalVerticalCheck(tile, col, row, 0, ROWS) &&
-            isLegalHorizontalCheck(tile, col, row, 0, COLUMNS) &&
-            nullptr == board[row][col];
+bool Board::legalPlacementAt(int x, int y, Tile* tile) {
+    return isLegalVerticalCheck(tile, x, y, 0, ROWS)      &&
+           isLegalHorizontalCheck(tile, x, y, 0, COLUMNS) &&
+           nullptr == board[row][col];
 }
 
 bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, int lower, int upper) {
     bool sameTile = false;
     bool diffShape = false;
     bool diffColour = false;
-    int i = y + 1;
+    int i = y;
+
+    if(upper != y)
+        y += 1;
+        
     Tile* tile = board[i][x];
 
     while(i < upper && tile != nullptr) {
@@ -111,8 +109,13 @@ bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, int lower, int upp
         tile = board[++i][x];
     }
 
-    i = y - 1;
+    i = y;
+
+    if(lower != y)
+        y -= 1;
+
     tile = board[i][x];
+
     while(i >= lower && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
         tile = board[--i][x];
@@ -124,7 +127,11 @@ bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, int lower, int u
     bool sameTile = false;
     bool diffShape = false;
     bool diffColour = false;
-    int i = x + 1;
+    int i = x;
+
+    if(upper != x)
+        x += 1;
+
     Tile* tile = board[y][i];
 
     while(i < upper && tile != nullptr) {
@@ -132,8 +139,13 @@ bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, int lower, int u
         tile = board[y][++i];
     }
 
-    i = x - 1;
+    i = x;
+
+    if(lower != x)
+        x -= 1;
+
     tile = board[y][i];
+
     while(i >= lower && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
         tile = board[y][--i];
@@ -159,4 +171,16 @@ int Board::getWidth() {
 
 int Board::getHeight() {
     return height;
+}
+
+std::ostream& operator<<(std::ostream &out, const Board& board) {
+    for(int i = 0; i < ROWS; ++i) {
+
+        for(int j = 0; j < COLUMNS; ++j) {
+            Tile* tile = board.getAt(i, j);
+
+            if(nullptr != tile)
+                out << tile << '@' <<   (char)(i + 'A') << j << " ";
+        }
+    }
 }
