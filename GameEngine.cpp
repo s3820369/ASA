@@ -282,7 +282,7 @@ bool GameEngine::save() {
     return success; 
 }
 
-void GameEngine::randomTileBag(Tile* tiles) {
+void GameEngine::shuffleTiles(Tile* tiles) {
     std::random_device randomSeed;
     std::uniform_int_distribution<int> uniform_dist(0, MAX_TILE_BAG_SIZE-1);
     int i = 0;
@@ -290,6 +290,7 @@ void GameEngine::randomTileBag(Tile* tiles) {
     //loop throught the whole tile size
     while(i < MAX_TILE_BAG_SIZE) {
         int randIndex = uniform_dist(randomSeed);
+
         //check if at random pos there is tile or not if not add it to the bag.
         if(tileBag.at(randIndex) != nullptr) {
             tileBag.insert(randIndex, tiles);
@@ -297,29 +298,25 @@ void GameEngine::randomTileBag(Tile* tiles) {
         }
     }
 }
-// std::vector<Tile*> GameEngine::createTile() {
-//     // loop through each color and the each shape for it
-//     // do it for all the colors
-//     Colour c[6] = {RED,ORANGE,YELLOW,GREEN,BLUE,PURPLE};
-//     Shape  s[6] = {CIRCLE,STAR_4,DIAMOND,SQUARE,STAR_6,CLOVER};
 
-//     for(int i = 0; i < 6; i++) {
-//         for(int j = 0;j < 6; j++) {
-//             Tile* tempTile = new Tile(c[i], s[j]);
-//             tilesState.push_back(tempTile);
-//         }
-//     }   
-//     for(int i = 0; i < 6; i++) {
-//         for(int j = 0; j < 6; j++) {
-//             Tile* tempT = new Tile(c[i], s[j]);
-//             tilesState.push_back(tempT);
-//         }
-//     }
+void GameEngine::createTileBag() {
+    // loop through each color and the each shape for it
+    // loop through the array of colors and shapes
+    Colour c[6] = {RED,ORANGE,YELLOW,GREEN,BLUE,PURPLE};
+    Shape  s[6] = {CIRCLE,STAR_4,DIAMOND,SQUARE,STAR_6,CLOVER};
+    
+    for(int k = 0; k < 2; k++){
 
-// }
+        for(int i = 0; i < 6; i++) {
 
-// void GameEngine::shuffleTiles(std::vector<Tile*> tiles) {
-//     for(int i=0; i < tilesState.size(); i++) {
-//         randomTileBag(tilesState[i]); 
-//     }
-// }
+            for(int j = 0; j < 6; j++) {
+                Tile* tempTile = new Tile(c[i], s[j]);
+                tilesState.push_back(tempTile);
+            }
+        }
+    }
+    for(int i = 0; i < tilesState.size(); i++) {
+        shuffleTiles(tilesState[i]);
+    }
+}
+

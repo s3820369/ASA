@@ -45,6 +45,8 @@ class GameEngine {
         Player player2;
         Board board;
 
+        std::vector<Tile*> tilesState;
+
         // Parse standard in command syntax. Checks bounds of board, valid command,
         // valid tile
         bool parseInput(std::string input);
@@ -74,10 +76,11 @@ class GameEngine {
         bool save();
 
 
-        std::vector<Tile*> createTile();
-        void shuffleTiles(std::vector<Tile*> tiles);
-        std::vector<Tile*> tilesState;
-        void randomTileBag(Tile * tiles);
+        void createTileBag();
+
+        //void shuffleTiles(std::vector<Tile*> tiles);
+
+        void shuffleTiles(Tile * tiles);
 };
 
 #endif // ASSIGN2_GAMEENGINE_H

@@ -1,4 +1,3 @@
-
 #include "Util.h"
 
 void toLowerCase(std::string& s) {
