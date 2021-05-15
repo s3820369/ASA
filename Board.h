@@ -22,8 +22,8 @@ public:
    // Add tile to board
    void addToBoard(Tile* t, int x, int y);
 
-   // Calculate score from prev
-   int calcScoreFrom(int x, int y, Tile* g);
+   // Calculate score from previous move - adds score for rows, column and qwirkle
+   int calcScoreFrom(int x, int y);
 
    // Checks game rules for legal move
    bool legalPlacementAt(int x, int y, Tile* t);

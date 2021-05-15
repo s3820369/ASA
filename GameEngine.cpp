@@ -129,7 +129,7 @@ bool GameEngine::executeCommand() {
             if(board.legalPlacementAt(x, y, tile)) {
                 board.addToBoard(new Tile(*tile), x, y);
 
-                //board.calcScoreFrom(x, y, nullptr);
+                currentPlayer->updateScore(board.calcScoreFrom(x, y));
 
                 Tile* replacement = tileBag.pop_front();
 
