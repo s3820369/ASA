@@ -34,8 +34,8 @@ public:
    // get a tile from board, used to make Board a proper ADT
    Tile* getAt(int x, int y) const;
 
-   int getWidth();
-   int getHeight();
+   int getWidth() const;
+   int getHeight() const;
 
 private:
    std::vector<std::vector<Tile*>> board;

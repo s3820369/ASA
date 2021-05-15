@@ -274,7 +274,7 @@ bool GameEngine::save() {
     if(outputFile.good()) {
         outputFile << player1;
         outputFile << player2;
- //       outputFile << board;
+        outputFile << board;
         outputFile << tileBag;
         outputFile << currentPlayer->getName();
         success = true;

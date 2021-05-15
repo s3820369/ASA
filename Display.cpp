@@ -148,15 +148,18 @@ void Display::print(Board& board) {
 
 
 std::ostream& operator<<(std::ostream &out, const Board& board) {
-    for(int i = 0; i < ROWS; ++i) {
+    out << board.getWidth() << ',' << ROWS_INT + 1 << '\n';
+
+    for(int i = 0; i < ROWS_INT + 1; ++i) {
 
         for(int j = 0; j < COLUMNS; ++j) {
-            Tile* tile = board.getAt(i, j);
+            Tile* tile = board.getAt(j, i);
 
             if(nullptr != tile)
-                out << *tile << '@' << (char)(i + 'A') << j << ' ';
+                out << *tile << '@' << (char)(i + 'A') << j+1 << ' ';
         }
     }
+    out << '\n';
      return out;
 }
 

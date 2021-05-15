@@ -191,10 +191,10 @@ Tile* Board::getAt(int x, int y) const {
     return board[y][x];
 }
 
-int Board::getWidth() {
+int Board::getWidth() const {
     return width;
 }
 
-int Board::getHeight() {
+int Board::getHeight() const {
     return height;
 }
