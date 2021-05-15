@@ -19,7 +19,7 @@ class Player {
       // Replace tile in hand with incoming tile
       void replaceTile(Tile* tile, Tile* replacement);
 
-      // return specified tile
+      // Return specified tile
       Tile* getTile(std::string tileCode);
 
       // Get hand

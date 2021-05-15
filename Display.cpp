@@ -39,10 +39,8 @@ void Display::printCredits() {
 
 std::string Display::getInput() {
     std::string input;
-
     while(!*quit && !std::regex_match(input, std::regex("\\w+"))) {
         prompt();
-
         if(std::getline(std::cin, input).eof()) {
             *quit = true;
             input = QUIT;
@@ -76,12 +74,16 @@ int Display::makeSelection() {
    return charToInt(input[0]);
 }
 
+void Display::prompt() {
+    std::cout << "> ";
+}
+
 void Display::print(std::string s) {
    std::cout << s << std::endl;
 }
 
-void Display::prompt() {
-    std::cout << "> ";
+void Display::print(LinkedList& list) {
+    std::cout << list;
 }
 
 void Display::print(Player& player) {
@@ -105,17 +107,10 @@ std::ostream& operator<<(std::ostream &out, const Player& player) {
         << '\n' << player.getHandConst();
     return out;
 }
-// std::ostream& operator<<(std::ostream &out, const Colour& colour) {
-//     out << 
-// }
-
-// std::ostream& operator<<(std::ostream &out, const Shape& shape) {
-
-// }
 
 void Display::print(Board& board) {
     char alphabets = 'A';
-    std::cout << "  ";
+    std::cout << "\n  ";
 
     for(int y = 0; y < 2; y++) {
         for(int u = 1; u < BOARD_SIZE + 1; u++) {
@@ -126,7 +121,6 @@ void Display::print(Board& board) {
             }
             else {
                 std::cout << "---";
-                std::cout.flush();
             }
         }
         if(y == 1)
@@ -150,4 +144,23 @@ void Display::print(Board& board) {
         std::cout << std::endl;
     }
     std::cout<<std::endl;
+}
+
+
+std::ostream& operator<<(std::ostream &out, const Board& board) {
+    for(int i = 0; i < ROWS; ++i) {
+
+        for(int j = 0; j < COLUMNS; ++j) {
+            Tile* tile = board.getAt(i, j);
+
+            if(nullptr != tile)
+                out << *tile << '@' << (char)(i + 'A') << j << ' ';
+        }
+    }
+     return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const Tile& tile) {
+    out << tile.colour << tile.shape;
+    return out;
 }

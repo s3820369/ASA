@@ -84,7 +84,27 @@ void LinkedList::insert(int index, Tile* data) {
    }
 }
 
+void LinkedList::remove(Tile* tile) {
+   Node* current = head;
+   Node* prev = nullptr;
+
+   if(nullptr != current) {
+      while(nullptr != current && current->tile != tile) {
+         prev = current;
+         current = current->next;
+      }
+   }
+
+   if     (current == head)      head = current->next;
+   else if(nullptr != current)   prev->next = current->next;
+
+   delete current;
+   --length;
+}
+
 void LinkedList::remove(int index) {
+   //Tile* retTile = nullptr;
+
    if(index < 0 || index >= length)
       out_of_bounds(index);
       
@@ -99,6 +119,8 @@ void LinkedList::remove(int index) {
          ++i;
       }
 
+   //   retTile = new Tile(*current->tile);
+
       if(index == 0)    head       = current->next;
       else              prev->next = current->next;
 
@@ -110,20 +132,20 @@ void LinkedList::remove(int index) {
 Tile* LinkedList::pop_front() {
    Tile* retTile = nullptr;
 
-   if(head == nullptr)
-      out_of_bounds(0);
+   if(head != nullptr) {
+      Node* toDelete = head;
+      head = head->next;
 
-   Node* toDelete = head;
-   head = head->next;
+      retTile = new Tile(*toDelete->tile);
 
-   retTile = new Tile(*toDelete->tile);
+      delete toDelete;
 
-   delete toDelete;
-
-   --length;
+      --length;
+   }
    return retTile;
 
 }
+
 Tile* LinkedList::pop_back() {
    Tile* retTile = nullptr;
 

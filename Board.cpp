@@ -4,8 +4,9 @@ Board::Board() {
     width = COLUMNS;
     height = ROWS;
     board.resize(BOARD_SIZE);
-
-    for(int i = 0; i < ROWS - 'A' + 1; ++i) {
+    firstTilePlaced = false;
+    
+    for(int i = 0; i < ROWS_INT + 1; ++i) {
         board[i] = std::vector<Tile*>(BOARD_SIZE);
 
         for(int j = 0; j < COLUMNS; ++j) {
@@ -82,74 +83,103 @@ int Board::calcScoreFrom(int x, int y, Tile* g) {
     }
     int tot = totalRowScore + scoreColLeft + scoreColRight;
     return tot;
-
-
 }
 
+bool Board::hasAdjacent(int x, int y, int xLow, int xHigh, int yLow, int yHigh) {
+    bool hasAdjacent = true;
+    
+    if     (yHigh != y && nullptr != board[y+1][x]);
+    else if(yLow  != y && nullptr != board[y-1][x]);
+    else if(xHigh != x && nullptr != board[y][x+1]);
+    else if(xLow  != x && nullptr != board[y][x-1]);
+    else    hasAdjacent = false;
+    return hasAdjacent;
+}
 
 bool Board::legalPlacementAt(int x, int y, Tile* tile) {
-    return isLegalVerticalCheck(tile, x, y, 0, ROWS)      &&
-           isLegalHorizontalCheck(tile, x, y, 0, COLUMNS) &&
-           nullptr == board[row][col];
+    bool legal = isLegalVerticalCheck(tile, x, y, 0, ROWS_INT)  &&
+                 isLegalHorizontalCheck(tile, x, y, 0, COLUMNS) &&
+                 nullptr == board[y][x];
+
+    if(firstTilePlaced)
+        legal = legal && hasAdjacent(x, y, 0, COLUMNS, 0, ROWS_INT);
+    else
+        firstTilePlaced = true;
+
+    return legal;
 }
 
-bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, int lower, int upper) {
+bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, const int lower, const int upper) {
     bool sameTile = false;
     bool diffShape = false;
     bool diffColour = false;
     int i = y;
-
+    
+    // If not edge, increment i so that it starts above where placing
     if(upper != y)
-        y += 1;
+        i += 1;
         
     Tile* tile = board[i][x];
 
     while(i < upper && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
-        tile = board[++i][x];
+        ++i;
+        if(upper != i)
+            tile = board[i][x];
     }
 
     i = y;
 
+    // If not edge, decrement i so that itstarts below where placing
     if(lower != y)
-        y -= 1;
+        i -= 1;
 
     tile = board[i][x];
 
     while(i >= lower && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
-        tile = board[--i][x];
+        --i;
+        if(lower < i)
+            tile = board[i][x];
     }
+
     return !((diffColour && diffShape) || sameTile);
 }
 
-bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, int lower, int upper) {
+bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, const int lower, const int upper) {
     bool sameTile = false;
     bool diffShape = false;
     bool diffColour = false;
     int i = x;
 
+    // If not edge, increment i so that it starts to the right of where placing
     if(upper != x)
-        x += 1;
+        i += 1;
 
     Tile* tile = board[y][i];
 
     while(i < upper && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
-        tile = board[y][++i];
+        ++i;
+        if(upper != i)
+            tile = board[y][i];
     }
 
     i = x;
 
+    // If not edge, decrement i so that it starts to the left of where placing
     if(lower != x)
-        x -= 1;
+        i -= 1;
 
     tile = board[y][i];
 
     while(i >= lower && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
-        tile = board[y][--i];
+        --i;
+        if(lower != i)
+            tile = board[y][i];
     }
+
     return !((diffColour && diffShape) || sameTile);
 }
 
@@ -161,7 +191,7 @@ void Board::checkConditions(Tile* placing, Tile* checking, bool& diffColour,
     if(!diffColour     && !diffShape)       sameTile = true;
 }
 
-Tile* Board::getAt(int x, int y) {
+Tile* Board::getAt(int x, int y) const {
     return board[y][x];
 }
 
@@ -171,16 +201,4 @@ int Board::getWidth() {
 
 int Board::getHeight() {
     return height;
-}
-
-std::ostream& operator<<(std::ostream &out, const Board& board) {
-    for(int i = 0; i < ROWS; ++i) {
-
-        for(int j = 0; j < COLUMNS; ++j) {
-            Tile* tile = board.getAt(i, j);
-
-            if(nullptr != tile)
-                out << tile << '@' <<   (char)(i + 'A') << j << " ";
-        }
-    }
 }

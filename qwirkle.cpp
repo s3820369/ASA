@@ -4,6 +4,7 @@
 
 #define EXIT_SUCCESS    0
 
+void load();
 
 int main(void) {
    int choice = -1;
@@ -14,8 +15,10 @@ int main(void) {
    GameEngine* engine = nullptr;
 
    while(!quit) {
+
       if(valid)
          display.printMenu();
+
       choice = display.makeSelection();
       
       if(NEW_GAME == choice) {
@@ -27,12 +30,14 @@ int main(void) {
             display.print("Enter player 2 name:");
             player2Name = display.getInput();
          }
+         
          if(!quit) {
             engine = new GameEngine(player1Name, player2Name);
             engine->start();
          }
          quit = true;
       }
+
       else if(LOAD_GAME == choice) {
          // TODO
       }
@@ -50,8 +55,10 @@ int main(void) {
          while(choice != BACK && choice != QUIT);
          valid = true;
       }
+
       else
          valid = false;
+
 
       if(QUIT == choice)
          quit = true;

@@ -27,8 +27,11 @@ public:
    // Exception is if inserting at last element, then it becomes the last element
    void insert(int index, Tile* data);
    
-   // Fully remove from list, deleting data
+   // remove from list
    void remove(int index);
+
+   // Fully remove from list
+   void remove(Tile* tile);
 
    // Remove and retrieve tile from front of list
    Tile* pop_front();

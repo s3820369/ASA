@@ -16,19 +16,28 @@
 #define BACK            5
 
 class Display {
-public:
-    Display();
-    Display(bool* quit);
-    void printMenu();
-    void printCredits();
-    void print(Player& p);
-    void print(Board& b);
-    void print(std::string s);
-    void prompt();
-    std::string getInput();
-    int makeSelection();
-private:
-   bool* quit;
+    public:
+        Display();
+
+        // Used to set the quit variable in qwirkle.cpp, so as to not print
+        // menu again before quitting
+        Display(bool* quit);
+
+        void printMenu();
+        void printCredits();
+
+        void print(Player& p);
+        void print(Board& b);
+        void print(LinkedList& list);
+        void print(std::string s);
+
+        // Menu selection handling
+        int makeSelection();
+        std::string getInput();
+        void prompt();
+
+    private:
+    bool* quit;
 };
 
 #endif // ASSIGN2_DISPLAY_H

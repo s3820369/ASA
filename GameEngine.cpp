@@ -4,7 +4,6 @@
 #include <random>
 #include <sstream>
 #include "GameEngine.h"
-#include "TileCodes.h"
 #include "Util.h"
 
 GameEngine::~GameEngine() {
@@ -19,6 +18,8 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     player1 = Player(player1Name);
     player2 = Player(player2Name);
     currentPlayer = &player1;
+    
+    // Testing 22
     Tile* tiles[22] =
     {
         new Tile('R', 4),
@@ -36,7 +37,7 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
         new Tile('G', 5),
         new Tile('Y', 4),
         new Tile('Y', 2),
-        new Tile('p', 2),
+        new Tile('P', 2),
         new Tile('O', 1),
         new Tile('G', 6),
         new Tile('Y', 4),
@@ -56,7 +57,7 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     for(int i = 0; i < HAND_SIZE; ++i) {
         player2.getHand().push_back(tileBag.pop_front());
     }
-    this->tiles.resize(72);
+    this->tilesState.resize(MAX_TILE_BAG_SIZE);
 }
 
 
@@ -69,8 +70,8 @@ GameEngine::GameEngine() {
 
 
 bool GameEngine::gameIsOver() {
-    return (player1.getHand().size() == 0  || player2.getHand().size() == 0) &&
-                                                        tileBag.size() == 0;
+    return (player1.getHand().size() == 0 || player2.getHand().size() == 0) &&
+                                                       tileBag.size() == 0;
 }
 
 void GameEngine::checkError() {
@@ -91,6 +92,7 @@ void GameEngine::start() {
 
         while(invalidInput) {
             display.prompt();
+
             if(getline(std::cin, input).eof()) {
                 invalidInput = false;
                 quit = true;
@@ -99,8 +101,8 @@ void GameEngine::start() {
             else if(parseInput(input)) {
                 if(executeCommand())
                     invalidInput = false;
-            } else
-                errorMessage = "Please enter a valid command!";
+            } else errorMessage = "Please enter a valid command!";
+
             checkError();
         }
         currentPlayer = *currentPlayer == player1 ? &player2 : &player1;
@@ -113,22 +115,28 @@ void GameEngine::start() {
 
 bool GameEngine::executeCommand() {
     bool valid = false;
-    int x = charToInt(tokens.boardLoc[1]) - 1;
-    int y = tokens.boardLoc[1] - 'A';
+    int y = tokens.boardLoc[0] - 'A';
+    int x = -1;
+
+    // Handle double digit column
+    if(tokens.boardLoc.length() == 3)   x += doubleDigitCol(tokens.boardLoc);
+    else                                x += charToInt(tokens.boardLoc[1]);
 
     if(PLACE == tokens.command) {
         Tile* tile = currentPlayer->getTile(tokens.tileCode);
 
         if(nullptr != tile) {
             if(board.legalPlacementAt(x, y, tile)) {
-                board.addToBoard(tile, x, y);
+                board.addToBoard(new Tile(*tile), x, y);
+
+                //board.calcScoreFrom(x, y, nullptr);
 
                 Tile* replacement = tileBag.pop_front();
-                if(nullptr != replacement)
-                    currentPlayer->replaceTile(tile, replacement);
 
+                currentPlayer->replaceTile(tile, replacement);
                 valid = true;
-            } else errorMessage = "You cannot place a tile here!";
+
+            } else errorMessage = "You cannot place that tile here!";
         } else errorMessage = "You do not have that tile!";
     }
 
@@ -137,12 +145,19 @@ bool GameEngine::executeCommand() {
         Tile* replacement = tileBag.pop_front();
 
         if(nullptr != playerTile) {
+            Tile* copyPlayerTile = new Tile(*currentPlayer->getTile(tokens.tileCode));
+
             if(nullptr != replacement) {
                 currentPlayer->replaceTile(playerTile, replacement);
+                tileBag.push_back(copyPlayerTile);
+
+                display.print(currentPlayer->getHand());
+
                 valid = false;
             } else errorMessage = "There are no more tiles in the bag!";
         } else errorMessage = "You do not have that tile!";
     }
+
     else if(tokens.command == SAVE) {
         save();
         valid = true;
@@ -161,6 +176,7 @@ bool GameEngine::parseInput(std::string input) {
 
     if(PLACE == tokens[0]) {
         this->tokens.command = PLACE;
+
         if(validTile(tokens[1])) {
 
             if(tokens[2] == AT && validLoc(tokens[3])) {
@@ -172,6 +188,7 @@ bool GameEngine::parseInput(std::string input) {
 
     else if(REPLACE == tokens[0]) {
         this->tokens.command = REPLACE;
+        
         if(validTile(tokens[1])) {
             this->tokens.tileCode = tokens[1];
             valid = true;
@@ -202,14 +219,21 @@ bool GameEngine::validTile(std::string tileCode) {
 bool GameEngine::validLoc(std::string location) {
     bool validRow = false;
     bool validCol = false;
+    int col = -1;
 
-    if(location.length() == 2) {
+    if(location.length() == 2 || location.length() == 3) {
         const char* loc = location.c_str();
 
+        // If doulbe digit coloumn
+        if(3 == location.length())  col = doubleDigitCol(location);
+        else                        col = charToInt(location[1]);
+
+        // Check valid row
         if(loc[0] >= 'A' && loc[0] <= board.getHeight())
             validRow = true;
 
-        if(charToInt(loc[1]) > 0 && charToInt(loc[1]) < board.getWidth())
+        // Check valid column
+        if(col > 0 && col <= board.getWidth())
             validCol = true;
     }
     return validRow && validCol;
@@ -250,7 +274,7 @@ bool GameEngine::save() {
     if(outputFile.good()) {
         outputFile << player1;
         outputFile << player2;
-        outputFile << board;
+ //       outputFile << board;
         outputFile << tileBag;
         outputFile << currentPlayer->getName();
         success = true;
@@ -273,29 +297,29 @@ void GameEngine::randomTileBag(Tile* tiles) {
         }
     }
 }
-std::vector<Tile*> GameEngine::createTile() {
-    // loop through each color and the each shape for it
-    // do it for all the colors
-    Colour c[6] = {RED,ORANGE,YELLOW,GREEN,BLUE,PURPLE};
-    Shape  s[6] = {CIRCLE,STAR_4,DIAMOND,SQUARE,STAR_6,CLOVER};
+// std::vector<Tile*> GameEngine::createTile() {
+//     // loop through each color and the each shape for it
+//     // do it for all the colors
+//     Colour c[6] = {RED,ORANGE,YELLOW,GREEN,BLUE,PURPLE};
+//     Shape  s[6] = {CIRCLE,STAR_4,DIAMOND,SQUARE,STAR_6,CLOVER};
 
-    for(int i = 0; i < 6; i++) {
-        for(int j = 0;j < 6; j++) {
-            Tile* tempTile = new Tile(c[i], s[j]);
-            tilesState.push_back(tempTile);
-        }
-    }   
-    for(int i = 0; i < 6; i++) {
-        for(int j = 0; j < 6; j++) {
-            Tile* tempT = new Tile(c[i], s[j]);
-            tilesState.push_back(tempT);
-        }
-    }
+//     for(int i = 0; i < 6; i++) {
+//         for(int j = 0;j < 6; j++) {
+//             Tile* tempTile = new Tile(c[i], s[j]);
+//             tilesState.push_back(tempTile);
+//         }
+//     }   
+//     for(int i = 0; i < 6; i++) {
+//         for(int j = 0; j < 6; j++) {
+//             Tile* tempT = new Tile(c[i], s[j]);
+//             tilesState.push_back(tempT);
+//         }
+//     }
 
-}
+// }
 
-void GameEngine::shuffleTiles(std::vector<Tile*> tiles) {
-    for(int i=0; i < tilesState.size(); i++) {
-        randomTileBag(tilesState[i]); 
-    }
-}
+// void GameEngine::shuffleTiles(std::vector<Tile*> tiles) {
+//     for(int i=0; i < tilesState.size(); i++) {
+//         randomTileBag(tilesState[i]); 
+//     }
+// }

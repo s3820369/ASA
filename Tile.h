@@ -18,9 +18,6 @@ class Tile {
 };
 
 bool operator==(const Tile tile1, const Tile tile2);
-// std::ostream& operator<<(std::ostream &out, const Colour& colour);
-// std::ostream& operator<<(std::ostream &out, const Shape& shape);
-
-
+std::ostream& operator<<(std::ostream &out, const Tile& tile);
 
 #endif // ASSIGN2_TILE_H

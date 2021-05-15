@@ -5,13 +5,9 @@ Player::Player() : score(0) {}
 Player::Player(std::string name) : name(name), score(0) {}
 
 void Player::replaceTile(Tile* tile, Tile* replacement) {
-    int index = -1;
-    for(int i = 0; i < hand.size(); ++i) {
-        if(hand.at(i) == tile)
-            index = i;
-    }
-    hand.remove(index);
-    hand.insert(index, replacement);
+    hand.remove(tile);
+    if(replacement != nullptr)
+        hand.push_back(replacement);
 }
 
 Tile* Player::getTile(std::string tileCode) {
@@ -21,7 +17,8 @@ Tile* Player::getTile(std::string tileCode) {
         Tile* tile = hand.at(i);
         
         if(tile->colour == tileCode[0] && tile->shape == charToInt(tileCode[1]))
-            retTile = tile;
+            if(nullptr == retTile)
+                retTile = tile;
     }
     return retTile;
 }
@@ -37,10 +34,10 @@ int Player::getScore() const {
 const LinkedList& Player::getHandConst() const {
     return hand;
 }
+
 LinkedList& Player::getHand() {
     return hand;
 }
-
 
 std::string Player::getName() const {
     return name;
