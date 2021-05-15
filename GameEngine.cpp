@@ -315,7 +315,7 @@ void GameEngine::createTileBag() {
             }
         }
     }
-    for(int i = 0; i < tilesState.size(); i++) {
+    for(unsigned int i = 0; i < tilesState.size(); i++) {
         shuffleTiles(tilesState[i]);
     }
 }

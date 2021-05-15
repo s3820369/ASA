@@ -104,7 +104,6 @@ bool Board::hasAdjacent(int x, int y, int xLow, int xHigh, int yLow, int yHigh) 
 
 
 bool Board::legalPlacementAt(int x, int y, Tile* tile) {
-<<<<<<< HEAD
     bool legal = isLegalVerticalCheck(tile, x, y, 0, ROWS_INT)  &&
                  isLegalHorizontalCheck(tile, x, y, 0, COLUMNS) &&
                  nullptr == board[y][x];
@@ -115,11 +114,6 @@ bool Board::legalPlacementAt(int x, int y, Tile* tile) {
         firstTilePlaced = true;
 
     return legal;
-=======
-    return isLegalVerticalCheck(tile, x, y, 0, ROWS)      &&
-           isLegalHorizontalCheck(tile, x, y, 0, COLUMNS) &&
-           nullptr == board[y][x];
->>>>>>> 70080c5b1d9f8d89820c9077523ed3f80dc441f9
 }
 
 bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, const int lower, const int upper) {
