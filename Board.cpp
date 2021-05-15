@@ -81,14 +81,8 @@ int Board::calcScoreFrom(int col, int row, Tile* g) {
     }
     int totalColumnScore = scoreColLeft + scoreColRight - 1 ;   //change 1 with a define statement called duplicate
     int tot = totalRowScore + totalColumnScore;
-    /**
-     * if(totalRowScore || totalColumnScore){
-     * std::cout<<"Qwirkle bois" << std::endl;
-     *  }
-     * 
-    */
-
     return tot;
+ 
 }
 
 bool Board::hasAdjacent(int x, int y, int xLow, int xHigh, int yLow, int yHigh) {
