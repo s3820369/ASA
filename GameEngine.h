@@ -40,6 +40,7 @@ class GameEngine {
         Tokens_t tokens;
         Display display;
         LinkedList tileBag;
+        LinkedList temptileBag;
         Player* currentPlayer;
         Player player1;
         Player player2;

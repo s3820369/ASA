@@ -14,42 +14,15 @@ GameEngine::~GameEngine() {
 GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     display = Display();
     tileBag = LinkedList();
+    temptileBag = LinkedList();
     board = Board();
     player1 = Player(player1Name);
     player2 = Player(player2Name);
     currentPlayer = &player1;
     
-    // Testing 22
-    Tile* tiles[22] =
-    {
-        new Tile('R', 4),
-        new Tile('O', 2),
-        new Tile('P', 4),
-        new Tile('R', 1),
-        new Tile('Y', 6),
-        new Tile('B', 5),
-        new Tile('G', 3),
-        new Tile('B', 5),
-        new Tile('R', 5),
-        new Tile('O', 2), 
-        new Tile('P', 3),
-        new Tile('G', 1),
-        new Tile('G', 5),
-        new Tile('Y', 4),
-        new Tile('Y', 2),
-        new Tile('P', 2),
-        new Tile('O', 1),
-        new Tile('G', 6),
-        new Tile('Y', 4),
-        new Tile('R', 2),
-        new Tile('B', 2),
-        new Tile('P', 6)
-    };
-
-    for(int i = 0; i < 22; ++i) {
-        tileBag.push_back(tiles[i]);
-    }
-
+    createTileBag();
+    shuffleTiles(nullptr);
+    
     for(int i = 0; i < HAND_SIZE; ++i) {
         player1.getHand().push_back(tileBag.pop_front());
     }
@@ -57,7 +30,6 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     for(int i = 0; i < HAND_SIZE; ++i) {
         player2.getHand().push_back(tileBag.pop_front());
     }
-    this->tilesState.resize(MAX_TILE_BAG_SIZE);
 }
 
 
@@ -283,18 +255,24 @@ bool GameEngine::save() {
 }
 
 void GameEngine::shuffleTiles(Tile* tiles) {
+    //loop throught the whole tile size
     std::random_device randomSeed;
-    std::uniform_int_distribution<int> uniform_dist(0, MAX_TILE_BAG_SIZE-1);
-    int i = 0;
+    std::uniform_int_distribution<int> uniform_dist(0, MAX_TILE_BAG_SIZE - 1);
+    
+    bool stop = false;
 
     //loop throught the whole tile size
-    while(i < MAX_TILE_BAG_SIZE) {
+    while(!stop) {
         int randIndex = uniform_dist(randomSeed);
+        if(randIndex < temptileBag.size()){
+            Tile* t = new Tile(temptileBag.at(randIndex)->colour,temptileBag.at(randIndex)->shape);
+            tileBag.push_back(t);
+            temptileBag.remove(randIndex);
 
-        //check if at random pos there is tile or not if not add it to the bag.
-        if(tileBag.at(randIndex) != nullptr) {
-            tileBag.insert(randIndex, tiles);
-            ++i;
+        }
+        if(temptileBag.size() == 0){
+            
+            stop = true;
         }
     }
 }
@@ -310,13 +288,14 @@ void GameEngine::createTileBag() {
         for(int i = 0; i < 6; i++) {
 
             for(int j = 0; j < 6; j++) {
+
                 Tile* tempTile = new Tile(c[i], s[j]);
                 tilesState.push_back(tempTile);
+                temptileBag.push_back(tempTile);
+
             }
         }
     }
-    for(unsigned int i = 0; i < tilesState.size(); i++) {
-        shuffleTiles(tilesState[i]);
-    }
+    
 }
 

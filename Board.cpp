@@ -184,7 +184,7 @@ void Board::checkConditions(Tile* placing, Tile* checking, bool& diffColour,
      
     if(placing->colour != checking->colour) diffColour = true; 
     if(placing->shape  != checking->shape)  diffShape = true;
-    if(!diffColour     && !diffShape)       sameTile = true;
+    if(placing->colour == checking->colour && placing->shape  == checking->shape)       sameTile = true;
 }
 
 Tile* Board::getAt(int x, int y) const {
