@@ -2,6 +2,7 @@
 #define ASSIGN2_UTIL_H
 
 #include <string>
+#include <vector>
 
 // Conversion of single digit numbers to int
 inline int charToInt(char c) {
@@ -16,5 +17,8 @@ inline int doubleDigitCol(std::string& loc) {
 // Convert string to lowercase, was going to be used for indifference in
 // capitals in commands, may not be used
 void toLowerCase(std::string& s);
+
+std::vector<std::string> splitString(std::string string, std::string delimiter);
+
 
 #endif

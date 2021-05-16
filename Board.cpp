@@ -17,6 +17,26 @@ Board::Board() {
     }
 }
 
+Board::Board(Parser::BoardState_t state) {
+    width = state.width;
+    height = state.height;
+
+    for(int i = 0; i < height - 'A' + 1; ++i) {
+        board.push_back(std::vector<Tile*>(width));
+    }
+
+    for(unsigned int i = 0; i < state.unparsedBoard.size(); ++i) {
+        std::vector<std::string> tilePos = splitString(state.unparsedBoard[i], "@");
+        Tile* tile = new Tile(tilePos[0][0], charToInt(tilePos[0][1]));
+        int row = tilePos[1][0] - 'A';
+        int col = -1;
+        if(tilePos[1].length() == 3)    col += doubleDigitCol(tilePos[1]);
+        else                            col += charToInt(tilePos[1][1]);
+        board[row][col] = tile;
+    }
+
+}
+
 void Board::addToBoard(Tile* t, int x, int y) {
     board[y][x] = t;
 }
@@ -86,10 +106,10 @@ int Board::calcScoreFrom(int col, int row) {
 bool Board::hasAdjacent(int x, int y, int xLow, int xHigh, int yLow, int yHigh) {
     bool hasAdjacent = true;
     
-    if     (yHigh != y && nullptr != board[y+1][x]);
-    else if(yLow  != y && nullptr != board[y-1][x]);
-    else if(xHigh != x && nullptr != board[y][x+1]);
-    else if(xLow  != x && nullptr != board[y][x-1]);
+    if     (yHigh  > y && nullptr != board[y+1][x]);
+    else if(yLow  <= y && nullptr != board[y-1][x]);
+    else if(xHigh  > x && nullptr != board[y][x+1]);
+    else if(xLow  <= x && nullptr != board[y][x-1]);
     else    hasAdjacent = false;
     return hasAdjacent;
 }
@@ -97,7 +117,7 @@ bool Board::hasAdjacent(int x, int y, int xLow, int xHigh, int yLow, int yHigh) 
 
 bool Board::legalPlacementAt(int x, int y, Tile* tile) {
     bool legal = isLegalVerticalCheck(tile, x, y, 0, ROWS_INT)  &&
-                 isLegalHorizontalCheck(tile, x, y, 0, COLUMNS) &&
+                 isLegalHorizontalCheck(tile, x, y, 0, COLUMNS-1) &&
                  nullptr == board[y][x];
 
     if(firstTilePlaced)
@@ -112,7 +132,7 @@ bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, const int lower, c
     int i = y;
     
     // If not edge, increment i so that it starts above where placing
-    if(upper != y)
+    if(y < upper)
         i += 1;
         
     Tile* tile = board[i][x];
@@ -120,7 +140,7 @@ bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, const int lower, c
     while(i < upper && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
         ++i;
-        if(upper != i)
+        if(i < upper)
             tile = board[i][x];
     }
 
@@ -135,7 +155,7 @@ bool Board::isLegalVerticalCheck(Tile* placing, int x, int y, const int lower, c
     while(i >= lower && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
         --i;
-        if(lower < i)
+        if(i >= lower)
             tile = board[i][x];
     }
 
@@ -149,7 +169,7 @@ bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, const int lower,
     int i = x;
 
     // If not edge, increment i so that it starts to the right of where placing
-    if(upper != x)
+    if(x < upper-1)
         i += 1;
 
     Tile* tile = board[y][i];
@@ -157,7 +177,7 @@ bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, const int lower,
     while(i < upper && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
         ++i;
-        if(upper != i)
+        if(i < upper)
             tile = board[y][i];
     }
 
@@ -172,7 +192,7 @@ bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, const int lower,
     while(i >= lower && tile != nullptr) {
         checkConditions(placing, tile, diffColour, diffShape, sameTile);
         --i;
-        if(lower != i)
+        if(i >= lower)
             tile = board[y][i];
     }
 
@@ -182,9 +202,9 @@ bool Board::isLegalHorizontalCheck(Tile* placing, int x, int y, const int lower,
 void Board::checkConditions(Tile* placing, Tile* checking, bool& diffColour,
                             bool& diffShape, bool& sameTile) {
      
+    if(*placing == *checking)               sameTile = true;
     if(placing->colour != checking->colour) diffColour = true; 
     if(placing->shape  != checking->shape)  diffShape = true;
-    if(!diffColour     && !diffShape)       sameTile = true;
 }
 
 Tile* Board::getAt(int x, int y) const {

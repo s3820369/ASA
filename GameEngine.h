@@ -11,6 +11,7 @@
 #include "Board.h"
 #include "Tile.h"
 #include "TileCodes.h"
+#include "Parser.h"
 
 #define MAX_ARGS        4
 #define PLACE        "place"
@@ -21,9 +22,14 @@
 
 class GameEngine {
     public:
+        ~GameEngine();
         GameEngine();
         GameEngine(std::string player1Name, std::string player2Name);
-        ~GameEngine();
+        GameEngine(Parser::PlayerInfo_t p1info, Parser::PlayerInfo_t p2info,
+                   Parser::BoardState_t boardState,
+                   std::vector<std::string> tileBagStr,
+                   std::string currentPlayer);
+                   
         void start();
 
     private:
@@ -41,6 +47,7 @@ class GameEngine {
         Display display;
         LinkedList tileBag;
         Player* currentPlayer;
+        Player* otherPlayer;
         Player player1;
         Player player2;
         Board board;
@@ -64,7 +71,7 @@ class GameEngine {
         bool validLoc(std::string location);
 
         // Perform a valid command - place, replace, save
-        bool executeCommand();
+        bool executeCommand(bool *quit);
 
         // Checks end game condition
         bool gameIsOver();

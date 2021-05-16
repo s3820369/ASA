@@ -30,6 +30,7 @@ class Display {
         void print(Board& b);
         void print(LinkedList& list);
         void print(std::string s);
+        void print(int x);
 
         // Menu selection handling
         int makeSelection();

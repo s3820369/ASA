@@ -39,7 +39,7 @@ void Display::printCredits() {
 
 std::string Display::getInput() {
     std::string input;
-    while(!*quit && !std::regex_match(input, std::regex("\\w+"))) {
+    while(!*quit && !std::regex_match(input, std::regex("[-_\\.\\w\\d]+"))) {
         prompt();
         if(std::getline(std::cin, input).eof()) {
             *quit = true;
@@ -80,6 +80,10 @@ void Display::prompt() {
 
 void Display::print(std::string s) {
    std::cout << s << std::endl;
+}
+
+void Display::print(int x) {
+    std:: cout << x << std::endl;
 }
 
 void Display::print(LinkedList& list) {

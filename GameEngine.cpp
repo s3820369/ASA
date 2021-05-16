@@ -10,6 +10,16 @@ GameEngine::~GameEngine() {
     // No deleting as nothing is allocated on the heap.
     // Can change if we're only allowed to new instances.
 }
+GameEngine::GameEngine(Parser::PlayerInfo_t p1info, Parser::PlayerInfo_t p2info,
+                                                    Parser::BoardState_t boardState,
+                                                    std::vector<std::string> tilebag,
+                                                    std::string loadedCurrent) {
+    player1 = Player(p1info);
+    player2 = Player(p2info);
+    board = Board(boardState);
+    this->currentPlayer = player1.getName() == loadedCurrent ? &player1 : &player2;
+}
+            
 
 GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     display = Display();
@@ -24,20 +34,20 @@ GameEngine::GameEngine(std::string player1Name, std::string player2Name) {
     {
         new Tile('R', 4),
         new Tile('O', 2),
-        new Tile('P', 4),
+        new Tile('R', 2), // P4
         new Tile('R', 1),
         new Tile('Y', 6),
-        new Tile('B', 5),
+        new Tile('B', 5), //p1
         new Tile('G', 3),
-        new Tile('B', 5),
+        new Tile('R', 2), //B5
         new Tile('R', 5),
         new Tile('O', 2), 
         new Tile('P', 3),
-        new Tile('G', 1),
-        new Tile('G', 5),
-        new Tile('Y', 4),
-        new Tile('Y', 2),
-        new Tile('P', 2),
+        new Tile('G', 1), //p2
+        new Tile('G', 5), //p1
+        new Tile('Y', 4), //p2
+        new Tile('Y', 2), //p1
+        new Tile('P', 2), //p2
         new Tile('O', 1),
         new Tile('G', 6),
         new Tile('Y', 4),
@@ -66,12 +76,13 @@ GameEngine::GameEngine() {
     tileBag = LinkedList();
     board = Board();
     currentPlayer = &player1;
+    otherPlayer = &player2;
 }
 
 
 bool GameEngine::gameIsOver() {
     return (player1.getHand().size() == 0 || player2.getHand().size() == 0) &&
-                                                       tileBag.size() == 0;
+                                                         tileBag.size() == 0;
 }
 
 void GameEngine::checkError() {
@@ -84,9 +95,12 @@ void GameEngine::checkError() {
 void GameEngine::start() {
     std::string input = "";
     bool quit = false;
+ //   bool* quitptr = &quit;
 
     while(!quit) {
         display.print(board);
+//        display.print(otherPlayer->getName());
+//        display.print(otherPlayer->getScore());
         display.print(*currentPlayer);
         bool invalidInput = true;
 
@@ -99,13 +113,14 @@ void GameEngine::start() {
             }
 
             else if(parseInput(input)) {
-                if(executeCommand())
+                if(executeCommand(&quit))
                     invalidInput = false;
             } else errorMessage = "Please enter a valid command!";
 
             checkError();
         }
         currentPlayer = *currentPlayer == player1 ? &player2 : &player1;
+ //       otherPlayer   = *otherPlayer == player1 ? &player2 : &player1;
         
         if(gameIsOver())
             quit = true;
@@ -113,7 +128,7 @@ void GameEngine::start() {
 }
 
 
-bool GameEngine::executeCommand() {
+bool GameEngine::executeCommand(bool* quit) {
     bool valid = false;
     int y = tokens.boardLoc[0] - 'A';
     int x = -1;
@@ -153,7 +168,7 @@ bool GameEngine::executeCommand() {
 
                 display.print(currentPlayer->getHand());
 
-                valid = false;
+                valid = true;
             } else errorMessage = "There are no more tiles in the bag!";
         } else errorMessage = "You do not have that tile!";
     }
@@ -162,6 +177,15 @@ bool GameEngine::executeCommand() {
         save();
         valid = true;
     }
+
+    // Don't care if it fails, only care if it passes
+    try {
+        if(QUIT == stoi(tokens.command)) {
+            valid = true;
+            *quit = true;
+        }
+    } catch(...) {}
+
     return valid;
 }
 
@@ -200,6 +224,18 @@ bool GameEngine::parseInput(std::string input) {
         this->tokens.saveFile = tokens[1];
         valid = true;
     }
+
+    // Don't care if it fails, only care if it passes
+    try {
+        if(QUIT == stoi(tokens[0])) {
+            std::stringstream ss;
+            std::string com;
+            ss << QUIT;
+            ss >> com;
+            this->tokens.command = com;
+            valid = true;
+        }
+    } catch(...) {}
     return valid;
 }
 

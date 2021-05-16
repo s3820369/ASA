@@ -7,6 +7,7 @@
 #include <cmath>
 #include "Tile.h"
 #include "Util.h"
+#include "Parser.h"
 
 #define MAX_TILE_BAG_SIZE  72
 #define BOARD_SIZE         26
@@ -18,6 +19,7 @@ class Board {
    
 public:
    Board();
+   Board(Parser::BoardState_t state);
    
    // Add tile to board
    void addToBoard(Tile* t, int x, int y);

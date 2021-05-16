@@ -5,6 +5,7 @@
 #include <string>
 #include "Tile.h"
 #include "LinkedList.h"
+#include "Parser.h"
 
 #define HAND_SIZE    6
 
@@ -12,6 +13,8 @@ class Player {
    public:
       Player();
       Player(std::string name);
+      Player(Parser::PlayerInfo_t info);
+      ~Player();
 
       // Update the player's score
       void updateScore(int x);
